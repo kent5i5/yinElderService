@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.yinkin.yinelderservice.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_slideshow"
+        android:name="com.yinkin.yinelderservice.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_slideshow"
+        tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_job"
+        android:name="com.yinkin.yinelderservice.ui.job.jobFragment"
+        android:label="@string/menu_job"
+        tools:layout="@layout/fragment_job_list" >
+        <action
+            android:id="@+id/action_nav_job_to_jobDetailFragment"
+            app:destination="@id/jobDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_messages"
+        android:name="com.yinkin.yinelderservice.ui.gallery.MessagesFragment"
+        android:label="@string/menu_messages"
+        tools:layout="@layout/fragment_messages" />
+    <fragment
+        android:id="@+id/jobDetailFragment"
+        android:name="com.yinkin.yinelderservice.ui.job.jobDetailFragment"
+        android:label="@string/menu_jobdetail"
+        tools:layout="@layout/fragment_job_detail">
+        <action
+            android:id="@+id/action_jobDetailFragment_to_joabLocationMapsFragment"
+            app:destination="@id/joabLocationMapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/joabLocationMapsFragment"
+        android:name="com.yinkin.yinelderservice.ui.job.JobLocationMapsFragment"
+        android:label="@string/menu_jobmap"
+        tools:layout="@layout/fragment_job_location_maps" />
+</navigation>

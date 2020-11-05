@@ -166,8 +166,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
                 .applicationId("myappID")
                 // if defined
-                .clientKey("mePt8aoxLEIA")
-                .server("http://54.212.116.84/parse/")
+                .clientKey("myServerKey")
+                .server("http://myServerUrl/parse/")
                 .build()
         );
 

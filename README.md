@@ -1,7 +1,7 @@
 
 # yinElderService Android App
 
-![Screenshot_1604634177](https://user-images.githubusercontent.com/3708465/98338498-1ff07900-1fbf-11eb-82af-eccefc7e58dc.png)
+![Screenshot_1604634177](https://user-images.githubusercontent.com/3708465/98338498-1ff07900-1fbf-11eb-82af-eccefc7e58dc.png){: width=150 height=100 style="float:right; padding:16px"}
 
 Screenshots
 
@@ -31,6 +31,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha01"
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.25.0'
 }
+
 
 
 

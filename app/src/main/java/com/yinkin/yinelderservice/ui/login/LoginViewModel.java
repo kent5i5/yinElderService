@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import android.util.Log;
 import android.util.Patterns;
 
+import com.parse.LogInCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.yinkin.yinelderservice.data.LoginRepository;
 import com.yinkin.yinelderservice.data.Result;
@@ -37,14 +40,46 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<ParseUser> result = loginRepository.login(username, password);
+       // Result<ParseUser> result = loginRepository.login(username, password);
 
-        if (result instanceof Result.Success) {
-            ParseUser data = ((Result.Success<ParseUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getUsername())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
+//        if (result instanceof Result.Success) {
+//            ParseUser data = ((Result.Success<ParseUser>) result).getData();
+//            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getUsername())));
+//        } else {
+//            loginResult.setValue(new LoginResult(R.string.login_failed));
+//        }
+
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+
+                if (e == null) {
+                    Log.i("Info", "Logged in " + user.get("level"));
+                    if(user.containsKey("level")){
+                        //                        if (user.get("level").equals("Employee") && isEmployee){
+                        //                            goToEmployeeListActivity();
+                        //                        } else if(user.get("level").equals("Employer") && isEmployer) {
+                        //                            goToUserListActivity();
+                        //                        } else {
+                        Log.i("Info", "Logged fail with incorrect level");
+                        //Toast.makeText(MainActivity.this, "Please switch to " + user.get("level").toString()+ " mode", Toast.LENGTH_SHORT).show();
+                        //ParseUser.logOut();
+                        //}
+                        loginResult.setValue(new LoginResult(new LoggedInUserView(ParseUser.getCurrentUser().getUsername())));
+                    }
+
+                } else {
+                    Log.i("Info", "Logged fail");
+                    loginResult.setValue(new LoginResult(R.string.login_failed));
+
+                }
+            }
+        });
+    }
+
+
+    public void logout(){
+        ParseUser.logOut();
     }
 
     public void loginDataChanged(String username, String password) {
@@ -73,4 +108,5 @@ public class LoginViewModel extends ViewModel {
     private boolean isPasswordValid(String password) {
         return password != null && password.trim().length() > 5;
     }
+
 }

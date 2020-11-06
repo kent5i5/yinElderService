@@ -47,10 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Add your initialization code here
         // Add your initialization code here
         Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
-                .applicationId("myappID")
+                .applicationId("APP_ID")
                 // if defined
-                .clientKey("myServerKey")
-                .server("http://myServerUrl/parse/")
+                .clientKey("CLIENT_KEY")
+                .server("http://localhost:3001/parse/")
                 .build()
         );
 

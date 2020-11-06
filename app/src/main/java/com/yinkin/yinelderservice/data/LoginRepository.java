@@ -1,5 +1,10 @@
 package com.yinkin.yinelderservice.data;
 
+import android.util.Log;
+
+import com.parse.LogInCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.yinkin.yinelderservice.data.model.LoggedInUser;
 
@@ -35,8 +40,7 @@ public class LoginRepository {
 
     public void logout() {
         user = null;
-        //dataSource.logout();
-        ParseUser.logOut();
+        dataSource.logout();
     }
 
     private void setLoggedInUser(ParseUser user) {
@@ -47,10 +51,13 @@ public class LoginRepository {
 
     public Result<ParseUser> login(String username, String password) {
         // handle login
-        Result<ParseUser> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
+        //Result<ParseUser> result = dataSource.login(username, password);
+        final Result[] result = new Result[1];
+
+
+        //if (result instanceof Result.Success) {
             //setLoggedInUser(((Result.Success<ParseUser>) result).getData());
-        }
-        return result;
+        //}
+        return result[0];
     }
 }

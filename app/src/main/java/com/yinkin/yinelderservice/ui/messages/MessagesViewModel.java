@@ -1,4 +1,4 @@
-package com.yinkin.yinelderservice.ui.gallery;
+package com.yinkin.yinelderservice.ui.messages;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

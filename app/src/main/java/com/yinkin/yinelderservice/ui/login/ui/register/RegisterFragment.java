@@ -9,6 +9,7 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.yinkin.yinelderservice.ProfileActivity;
 import com.yinkin.yinelderservice.R;
 //import com.yinkin.yinelderservice.ui.login.R;
 
@@ -135,7 +138,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         // TODO : initiate successful logged in experience
         if (getContext() != null && getContext().getApplicationContext() != null) {
             Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -148,13 +152,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-
-    public void goToUserListActivity(View view){
-//        Intent intent = new Intent(getApplicationContext(), EmployerListActivity.class);
-//        startActivity(intent);
-
-        //NavHostFragment.findNavController(this).navigate(R.id.loginFragment);
-    }
 
     @Override
     public void onClick(View v) {

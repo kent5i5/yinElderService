@@ -3,6 +3,8 @@ package com.yinkin.yinelderservice.ui.home;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +21,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.yinkin.yinelderservice.R;
 import com.yinkin.yinelderservice.ServiceMapActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -54,8 +59,8 @@ public class HomeFragment extends Fragment {
                 final String[] result = {"","","","",""};
                 ParseQuery<ParseUser> query = ParseUser.getQuery();
                 query.whereEqualTo("level","Employee");
+                query.whereWithinMiles("location",ParseUser.getCurrentUser().getParseGeoPoint("location"),100);
                 query.setLimit(5);
-                query.whereNear("location",ParseUser.getCurrentUser().getParseGeoPoint("location"));
                 query.findInBackground(new FindCallback<ParseUser>() {
                     @Override
                     public void done(List<ParseUser> objects, ParseException e) {

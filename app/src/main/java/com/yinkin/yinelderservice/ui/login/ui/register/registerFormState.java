@@ -11,20 +11,22 @@ class registerFormState {
     @Nullable
     private Integer passwordError;
     @Nullable
-    private Integer adddressError;
+    private Integer addressError;
+
     private boolean isDataValid;
 
     registerFormState(@Nullable Integer usernameError, @Nullable Integer passwordError,
             @Nullable Integer addressError) {
         this.usernameError = usernameError;
         this.passwordError = passwordError;
-        this.adddressError = addressError;
+        this.addressError = addressError;
         this.isDataValid = false;
     }
 
     registerFormState(boolean isDataValid) {
         this.usernameError = null;
         this.passwordError = null;
+        this.addressError = null;
         this.isDataValid = isDataValid;
     }
 
@@ -38,8 +40,9 @@ class registerFormState {
         return passwordError;
     }
 
-    Integer getAdddressError() {
-        return adddressError;
+    @Nullable
+    Integer getAddressError() {
+        return addressError;
     }
 
     boolean isDataValid() {

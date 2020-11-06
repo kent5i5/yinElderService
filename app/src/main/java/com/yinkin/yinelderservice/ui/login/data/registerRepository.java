@@ -4,6 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -60,9 +61,9 @@ public class registerRepository {
         return null;
     }
 
-    public Result<ParseUser> register(final String username, String password, final String address, boolean isEmployer){
+    public Result<ParseUser> register(final String username, String password, final ParseGeoPoint location, boolean isEmployer){
         user = new ParseUser();
-        Result<ParseUser> result = dataSource.register(username, password, address, isEmployer);
+        Result<ParseUser> result = dataSource.register(username, password, location, isEmployer);
         if (result instanceof  Result.Success){
             setRegisteredInUser(((Result.Success<ParseUser>) result).getData());
         }

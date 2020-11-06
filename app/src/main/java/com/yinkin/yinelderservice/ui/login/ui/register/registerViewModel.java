@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import android.util.Patterns;
 
+import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.yinkin.yinelderservice.R;
 import com.yinkin.yinelderservice.ui.login.data.registerRepository;
@@ -31,7 +32,7 @@ public class registerViewModel extends ViewModel {
         return registerResult;
     }
 
-    public void register(String username, String password,String address, boolean isEmployer) {
+    public void register(String username, String password, ParseGeoPoint address, boolean isEmployer) {
         // can be launched in a separate asynchronous job
         Result<ParseUser> result = registerRepository.register(username, password, address, isEmployer);
 

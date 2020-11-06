@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,13 +28,42 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseGeoPoint;
 import com.yinkin.yinelderservice.ProfileActivity;
 import com.yinkin.yinelderservice.R;
+
+import java.io.IOException;
+import java.util.List;
 //import com.yinkin.yinelderservice.ui.login.R;
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private registerViewModel registerViewModel;
+
+    public ParseGeoPoint getLocationFromAddress(String strAddress){
+
+        Geocoder coder = new Geocoder(getContext());
+        List<Address> address;
+        ParseGeoPoint p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress,5);
+            if (address==null) {
+                return null;
+            }
+            Address location=address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new ParseGeoPoint((double) (location.getLatitude() ),
+                    (double) (location.getLongitude() ));
+
+            return p1;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Nullable
     @Override
@@ -55,6 +86,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         final Button registerButton = view.findViewById(R.id.register);
         final ProgressBar loadingProgressBar = view.findViewById(R.id.loading);
 
+        final ParseGeoPoint newUserGeoPoint = getLocationFromAddress(addressEditText.getText().toString());
+
         registerViewModel.getRegisterFormState().observe(getViewLifecycleOwner(), new Observer<registerFormState>() {
             @Override
             public void onChanged(@Nullable registerFormState loginFormState) {
@@ -67,6 +100,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
                 if (loginFormState.getPasswordError() != null) {
                     passwordEditText.setError(getString(loginFormState.getPasswordError()));
+                }
+
+                if (loginFormState.getPasswordError() != null) {
+                    addressEditText.setError(getString(loginFormState.getAddressError()));
                 }
             }
         });
@@ -112,7 +149,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     registerViewModel.register(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString(), addressEditText.toString(), isEmployerCheck.isChecked());
+                            passwordEditText.getText().toString(), newUserGeoPoint , isEmployerCheck.isChecked());
                 }
                 return false;
             }
@@ -123,7 +160,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 registerViewModel.register(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString(), addressEditText.toString(), isEmployerCheck.isChecked());
+                        passwordEditText.getText().toString(), newUserGeoPoint, isEmployerCheck.isChecked());
                 //NavHostFragment.findNavController(RegisterFragment.this).navigate(R.id.loginFragment);
 
             }

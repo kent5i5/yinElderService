@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.FindCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -37,6 +38,8 @@ import java.util.Map;
 public class MessagesFragment extends Fragment {
 
     private MessagesViewModel messagesViewModel;
+    private EditText editMessage;
+    private EditText editReceiver;
 
     ListView feedListView;
 
@@ -44,20 +47,26 @@ public class MessagesFragment extends Fragment {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Messages");
         String arg = ParseUser.getCurrentUser().getUsername();
         query.whereEqualTo("receiver", arg );
-        query.setLimit(5);
+        query.setLimit(10);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                List<Map<String, String>> tweetData = new ArrayList<Map<String, String>>();
-                for (ParseObject tweet : objects){
-                    Map<String, String> tweetInfo = new HashMap<String, String>();
-                    tweetInfo.put("content", tweet.getString("body"));
-                    tweetInfo.put("sender", "by: "+tweet.getString("sender"));
-                    tweetData.add(tweetInfo);
+                if(e == null){
+
+                    List<Map<String, String>> tweetData = new ArrayList<Map<String, String>>();
+                    for (ParseObject tweet : objects) {
+                        Map<String, String> tweetInfo = new HashMap<String, String>();
+                        tweetInfo.put("content", tweet.getString("body"));
+                        tweetInfo.put("sender", "by: " + tweet.getString("sender"));
+                        tweetData.add(tweetInfo);
+
+                    }
+                    Log.i("Message data ",objects.size()+"");
+                    SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), tweetData,
+                            android.R.layout.simple_list_item_2, new String[]{"content", "sender"}, new int[]{android.R.id.text1, android.R.id.text2});
+                    feedListView.setAdapter(simpleAdapter);
                 }
-                SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), tweetData,
-                        android.R.layout.simple_list_item_2, new String[]{"content","sender"}, new int[] {android.R.id.text1, android.R.id.text2});
-                feedListView.setAdapter(simpleAdapter);
+
             }
         });
     }
@@ -77,30 +86,43 @@ public class MessagesFragment extends Fragment {
 
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
                 alertDialog.setTitle("New Tweet");
-                final EditText editTweet = new EditText(getContext());
-                final EditText editReciver = new EditText(getContext());
-                alertDialog.setView(editTweet);
-                //alertDialog.setView(editReciver);
+
+
+
+
+                // Get the layout inflater
+                final LayoutInflater inflater = requireActivity().getLayoutInflater();
+                View dialogView  = inflater.inflate(R.layout.dialog_send_message, null);
+                alertDialog.setView(dialogView);
+                editMessage = dialogView.findViewById(R.id.send_message);
+                editReceiver = dialogView.findViewById(R.id.receiver);
                 alertDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.i("Info",editTweet.getText().toString());
-                        ParseObject tweet = new ParseObject("Messages");
-                        tweet.put("sender",ParseUser.getCurrentUser().getUsername());
-                        tweet.put("receiver", "ocean1");
-                        tweet.put("body",editTweet.getText().toString());
-                        tweet.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("Parse tweet", "successful");
-                                    Toast.makeText(getContext(),"Message sended",Toast.LENGTH_SHORT).show();
-                                } else{
-                                    Log.i("Parse tweet", "fail");
-                                    Toast.makeText(getContext(),"Message fail to send",Toast.LENGTH_SHORT).show();
+                        try {
+                            ParseObject tweet = new ParseObject("Messages");
+                            tweet.put("sender", ParseUser.getCurrentUser().getUsername());
+                            tweet.put("receiver", editReceiver.getText().toString());
+                            tweet.put("body", editMessage.getText().toString());
+                            ParseACL parseACL = new ParseACL();
+                            parseACL.setPublicReadAccess(true);
+                            tweet.setACL(parseACL);
+                            tweet.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e == null) {
+                                        Log.i("Message send", "successful");
+                                        Toast.makeText(getContext(), "Message sended", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.i("Message ", "fail");
+                                        Toast.makeText(getContext(), "Message fail to send", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }catch (Exception e){
+                            Log.i("error", e.getMessage());
+                            Toast.makeText(getContext(), "Message fail to send because of an error", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 

@@ -3,6 +3,7 @@ package com.yinkin.yinelderservice.ui.login.data;
 import android.util.Log;
 
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -16,7 +17,7 @@ import java.io.IOException;
  */
 public class registerDataSource {
     ParseUser user = new ParseUser();
-    public Result<ParseUser> register(final String username, final String password, final String address, final Boolean isEmployer) {
+    public Result<ParseUser> register(final String username, final String password, final ParseGeoPoint address, final Boolean isEmployer) {
         Log.i("Parse tweet", username + password + isEmployer );
         user.setUsername(username);
         user.setPassword(password);
@@ -29,11 +30,13 @@ public class registerDataSource {
                         Log.i("Info", "Signed up");
 
                         if (isEmployer) {
-                            ParseObject newEmployee = new ParseObject("Employer");
+                            ParseObject newEmployer = new ParseObject("Employer");
 //                            newEmployee.put("username", username);
 //                            newEmployee.put("password", password);
-                            newEmployee.put("address", address);
-                            newEmployee.saveInBackground(new SaveCallback() {
+                            newEmployer.put("address", address);
+                            newEmployer.put("level", "Employee");
+
+                            newEmployer.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
                                     if (e == null) {
@@ -44,11 +47,11 @@ public class registerDataSource {
                                 }
                             });
 
-                            user.put("level", "Employee");
                         } else if (isEmployer == false) {
                             ParseObject newEmployer = new ParseObject("Employee");
-                            newEmployer.put("username", username);
+                            //newEmployer.put("username", username);
                             newEmployer.put("address", address);
+                            newEmployer.put("level", "Employer");
                             newEmployer.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
@@ -60,7 +63,6 @@ public class registerDataSource {
                                 }
                             });
 
-                            user.put("level", "Employer");
                         }
 
                     } else {

@@ -151,12 +151,15 @@ public class ServiceMapActivity extends FragmentActivity implements OnMapReadyCa
                 public void done(List<ParseUser> objects, ParseException e) {
                     for( ParseUser object: objects ) {
                         user[0] = object;
+                        ParseGeoPoint currentUserGeopoint = ParseUser.getCurrentUser().getParseGeoPoint("location");
+                        LatLng currentUserlocation = new LatLng(currentUserGeopoint.getLatitude(), currentUserGeopoint.getLongitude());
+                        mMap.addMarker(new MarkerOptions().position(currentUserlocation).title("Marker of " + ParseUser.getCurrentUser().getUsername() +"'s address").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                         userParseGeoPoint[0] = object.getParseGeoPoint("location");
                         Log.i("user query ",userParseGeoPoint[0].toString());
                         LatLng userLocation = new LatLng(userParseGeoPoint[0].getLatitude(), userParseGeoPoint[0].getLongitude());
                         mMap.addMarker(new MarkerOptions().position(userLocation).title("Marker of " + user[0].getUsername() +"'s address").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                         //mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 13));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10));
                     }
                 }
             });

@@ -25,7 +25,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="dialog_message">Search for close elder service worker</string>
-    <string name="dialog_title">Search for close elder service worker</string>
+    <string name="dialog_title">Search for elder service worker within 100 miles</string>
+    <string name="receiver">TO:</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_job">Job</string>

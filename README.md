@@ -1,9 +1,7 @@
 
 # yinElderService Android App
 
-![GitHub Logo](/images/logo.png) 
-
-Format: ![Alt Text](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/330px-Image_created_with_a_mobile_phone.png)
+![Screenshot_1604634177](https://user-images.githubusercontent.com/3708465/98338498-1ff07900-1fbf-11eb-82af-eccefc7e58dc.png)
 
 Screenshots
 

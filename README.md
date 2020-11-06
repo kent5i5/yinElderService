@@ -1,8 +1,7 @@
 
 # yinElderService Android App
 
-![Screenshot_1604634177](https://user-images.githubusercontent.com/3708465/98338498-1ff07900-1fbf-11eb-82af-eccefc7e58dc.png){: width=150 height=100 style="float:right; padding:16px"}
-
+![Screenshot_1604634177](https://user-images.githubusercontent.com/3708465/98338498-1ff07900-1fbf-11eb-82af-eccefc7e58dc.png =37.5 x 66.6)
 Screenshots
 
 About the components

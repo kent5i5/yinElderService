@@ -38,129 +38,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText passwordEditText;
     TextView modeTextView;
 
-    public void goToUserListActivity(){
-        Intent intent = new Intent(getApplicationContext(), EmployerListActivity.class);
-        startActivity(intent);
-    }
-    public void goToEmployeeListActivity(){
-        Intent intent = new Intent(getApplicationContext(), Employee.class);
-        startActivity(intent);
-    }
-
-    public void Login(View view) {
-        Log.i("user and password",usernameEditText.getText().toString()+" "+passwordEditText.getText().toString());
-            ParseUser.logInInBackground(usernameEditText.getText().toString(), passwordEditText.getText().toString(), new LogInCallback() {
-                @Override
-                public void done(ParseUser user, ParseException e) {
-
-                    if (e == null) {
-                        Log.i("Info", "Logged in " + user.get("level"));
-                        if(user.containsKey("level")){
-                            if (user.get("level").equals("Employee") && isEmployee){
-                                goToEmployeeListActivity();
-                            } else if(user.get("level").equals("Employer") && isEmployer) {
-                                 goToUserListActivity();
-                            } else {
-                                Log.i("Info", "Logged fail with incorrect level");
-                                Toast.makeText(MainActivity.this, "Please switch to " + user.get("level").toString()+ " mode", Toast.LENGTH_SHORT).show();
-                                ParseUser.logOut();
-                            }
-                        }
-
-                    } else {
-                        Log.i("Info", "Logged fail");
-                    }
-                }
-            });
-
-    }
-    public void SigUp(View view){
-
-        final ParseUser parseUser = new ParseUser();
-        parseUser.setUsername(usernameEditText.getText().toString());
-        parseUser.setPassword(passwordEditText.getText().toString());
-        if(isEmployee){
-            parseUser.put("level","Employee");
-        } else if(isEmployer){
-            parseUser.put("level","Employer");
-        }
-        parseUser.signUpInBackground(new SignUpCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.i("Info", "Signed up");
-//                    ParseObject newEmployer = new ParseObject("Employer");
-//                    newEmployer.put("username","ken");
-//                    newEmployer.put("address","400 clementina street");
-//                    newEmployer.saveInBackground(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if (e == null){
-//                                Log.i("Parse result:", "new employer added successful");
-//                            } else {
-//                                Log.i("Parse result:","new employer added fail");
-//                            }
-//                        }
-//                    });
-                    if(isEmployee){
-                        ParseObject newEmployee = new ParseObject("Employee");
-                        newEmployee.put("username", usernameEditText.getText().toString());
-                        newEmployee.put("address", "400 clement");
-                        newEmployee.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("Parse employee signup", "successful");
-                                } else{
-                                    Log.i("Parse tweet", "fail");
-                                }
-                            }
-                        });
-
-                        parseUser.put("level","Employee");
-                    } else if(isEmployer){
-                        ParseObject newEmployer = new ParseObject("Employer");
-                        newEmployer.put("username", usernameEditText.getText().toString());
-                        newEmployer.put("address", "400 clement");
-                        newEmployer.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null) {
-                                    Log.i("Parse employer signup", "successful");
-                                } else{
-                                    Log.i("Parse tweet", "fail");
-                                }
-                            }
-                        });
-
-                        parseUser.put("level","Employer");
-                    }
-
-                    Toast.makeText(MainActivity.this, "hi "+parseUser.getUsername(), Toast.LENGTH_SHORT ).show();
-                } else {
-                    Log.i("Info", e.getMessage());
-                    parseUser.logOut();
-                    Toast.makeText(MainActivity.this, e.getMessage().substring(e.getMessage().indexOf(" ")), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //hide title bar
         getSupportActionBar().hide();
-
-
-//        usernameEditText = (EditText) findViewById(R.id.nameEditText);
-//
-//        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
-
         // Add your initialization code here
         // Add your initialization code here
         Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
@@ -205,12 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.backgroundLayout) {
-            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-
-           inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(),0);
-
-        } else if(v.getId() == R.id.mode){
+      if(v.getId() == R.id.mode){
             if (isEmployee ) {
                 modeTextView.setText("Employer login");
                 isEmployer = true;
@@ -226,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER &&  event.getAction() == KeyEvent.ACTION_DOWN ){
-            goToUserListActivity();
+
         }
 
         return false;

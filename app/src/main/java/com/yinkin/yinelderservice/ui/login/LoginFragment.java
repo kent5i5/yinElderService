@@ -9,9 +9,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +30,8 @@ import android.widget.Toast;
 import com.yinkin.yinelderservice.EmployerListActivity;
 import com.yinkin.yinelderservice.ProfileActivity;
 import com.yinkin.yinelderservice.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
 
@@ -50,6 +56,11 @@ public class LoginFragment extends Fragment {
         final Button loginButton = view.findViewById(R.id.login);
         final Button gotoRegisterButton = view.findViewById(R.id.gotoregister);
         final ProgressBar loadingProgressBar = view.findViewById(R.id.loading);
+
+        if (isCashedUserInSQLlite()){
+            Intent intent = new Intent(getContext(), ProfileActivity.class);
+            startActivity(intent);
+        }
 
         loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), new Observer<LoginFormState>() {
             @Override
@@ -78,6 +89,7 @@ public class LoginFragment extends Fragment {
                     showLoginFailed(loginResult.getError());
                 }
                 if (loginResult.getSuccess() != null) {
+                    storeDataInSQLlite(usernameEditText.getText().toString(), passwordEditText.getText().toString() );
                     updateUiWithUser(loginResult.getSuccess());
                 }
             }
@@ -150,6 +162,49 @@ public class LoginFragment extends Fragment {
                     getContext().getApplicationContext(),
                     errorString,
                     Toast.LENGTH_LONG).show();
+        }
+    }
+    public boolean isCashedUserInSQLlite(){
+        try {
+            SQLiteDatabase yinDatabase = getActivity().openOrCreateDatabase("Users", MODE_PRIVATE, null);
+            Cursor sqlcursor = yinDatabase.rawQuery("SELECT * FROM users", null);
+
+            int nameIndex = sqlcursor.getColumnIndex("username");
+            //int passwordIndex = sqlcursor.getColumnIndex("password");
+            sqlcursor.moveToFirst();
+            while (!sqlcursor.isAfterLast()) {
+                Log.i("username", sqlcursor.getString(nameIndex));
+                //Log.i("password", sqlcursor.getString(passwordIndex));
+                sqlcursor.moveToNext();
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void storeDataInSQLlite(String loggedinUsername, String LoggedInPassword){
+        try {
+            SQLiteDatabase yinDatabase = getActivity().openOrCreateDatabase("Users", MODE_PRIVATE, null);
+            yinDatabase.execSQL("CREATE TABLE IF NOT EXISTS users (username VARCHAR, password VARCHAR)");
+            yinDatabase.execSQL("INSERT OR REPLACE INTO users (username, password) VALUES ('"
+                    + loggedinUsername
+                    + "', '" + LoggedInPassword + "')");
+
+
+            Cursor sqlcursor = yinDatabase.rawQuery("SELECT * FROM users", null);
+
+            int nameIndex = sqlcursor.getColumnIndex("username");
+            //int passwordIndex= sqlcursor.getColumnIndex("password");
+            sqlcursor.moveToFirst();
+            while (!sqlcursor.isAfterLast()) {
+                Log.i("username", sqlcursor.getString(nameIndex));
+                //Log.i("password",sqlcursor.getString(passwordIndex));
+                sqlcursor.moveToNext();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

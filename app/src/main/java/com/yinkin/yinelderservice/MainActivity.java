@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +30,10 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.yinkin.yinelderservice.ui.login.LoginActivity;
+import com.yinkin.yinelderservice.ui.settings.ObjectSerializer;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,View.OnKeyListener {
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText usernameEditText;
     EditText passwordEditText;
     TextView modeTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Add your initialization code here
         // Add your initialization code here
         Parse.initialize(new Parse.Configuration.Builder(getApplicationContext())
-                .applicationId("APP_ID")
+                .applicationId("id")
                 // if defined
-                .clientKey("CLIENT_KEY")
-                .server("http://localhost:3001/parse/")
+                .clientKey("key")
+                .server("http://url/parse/")
                 .build()
         );
 
@@ -69,7 +75,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         modeTextView = findViewById(R.id.mode);
         modeTextView.setOnClickListener(this);
 
-    LoadFirstActivity();
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, MainActivity.class));
+
+        LoadFirstActivity();
 }
 
     public void LoadFirstActivity()

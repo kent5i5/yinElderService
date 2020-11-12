@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -27,6 +29,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.yinkin.yinelderservice.R;
 import com.yinkin.yinelderservice.ServiceMapActivity;
+import com.yinkin.yinelderservice.ui.WebActicleFragment;
+import com.yinkin.yinelderservice.ui.login.LoginFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +47,19 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         final TextView textView = root.findViewById(R.id.text_home);
+        ImageView discoverImageView = root.findViewById(R.id.discoverImageView);
+        discoverImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Bundle args = new Bundle();
+//                //args.putString(ARG_PARAM1, param1);
+//                WebActicleFragment fragment = new WebActicleFragment();
+//                fragment.setArguments(args);
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .commit();
+                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.action_nav_home_to_webActicleFragment);
+            }
+        });
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -50,52 +67,56 @@ public class HomeFragment extends Fragment {
             }
         });
           Button searchButton = root.findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("location:",ParseUser.getCurrentUser().getParseGeoPoint("location").toString());
+          try {
+              searchButton.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      Log.i("location:", ParseUser.getCurrentUser().getParseGeoPoint("location").toString());
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                final String[] result = {"","","","",""};
-                ParseQuery<ParseUser> query = ParseUser.getQuery();
-                query.whereEqualTo("level","Employee");
-                query.whereWithinMiles("location",ParseUser.getCurrentUser().getParseGeoPoint("location"),100);
-                query.setLimit(5);
-                query.findInBackground(new FindCallback<ParseUser>() {
-                    @Override
-                    public void done(List<ParseUser> objects, ParseException e) {
-                        if (objects.size() > 0) {
-                            int i = 0;
-                            for (ParseUser object : objects) {
-                                result[i] = object.getUsername();
-                                i++;
-                            }
-                            //builder.setMessage(R.string.dialog_message)
-                            builder.setTitle(R.string.dialog_title)
-                                    .setItems(result,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(getContext(), ServiceMapActivity.class);
-                                            intent.putExtra("theSelectedUserId", result[which] );
-                                            startActivity(intent);
-                                        }
-                                    });
+                      final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                      final String[] result = {"", "", "", "", ""};
+                      ParseQuery<ParseUser> query = ParseUser.getQuery();
+                      query.whereEqualTo("level", "Employee");
+                      query.whereWithinMiles("location", ParseUser.getCurrentUser().getParseGeoPoint("location"), 100);
+                      query.setLimit(5);
+                      query.findInBackground(new FindCallback<ParseUser>() {
+                          @Override
+                          public void done(List<ParseUser> objects, ParseException e) {
+                              if (objects.size() > 0) {
+                                  int i = 0;
+                                  for (ParseUser object : objects) {
+                                      result[i] = object.getUsername();
+                                      i++;
+                                  }
+                                  //builder.setMessage(R.string.dialog_message)
+                                  builder.setTitle(R.string.dialog_title)
+                                          .setItems(result,
+                                                  new DialogInterface.OnClickListener() {
+                                                      @Override
+                                                      public void onClick(DialogInterface dialog, int which) {
+                                                          Intent intent = new Intent(getContext(), ServiceMapActivity.class);
+                                                          intent.putExtra("theSelectedUserId", result[which]);
+                                                          startActivity(intent);
+                                                      }
+                                                  });
 
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        }else {
-                            builder.setMessage("NO NEARBY EMPLOYEE")
-                                    .setTitle(R.string.dialog_title);
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                        }
-                    }
-                });
+                                  AlertDialog dialog = builder.create();
+                                  dialog.show();
+                              } else {
+                                  builder.setMessage("NO NEARBY EMPLOYEE")
+                                          .setTitle(R.string.dialog_title);
+                                  AlertDialog dialog = builder.create();
+                                  dialog.show();
+                              }
+                          }
+                      });
 
-            }
-        });
+                  }
+              });
 
+          }catch (Exception e) {
+              e.printStackTrace();
+          }
         return root;
     }
 

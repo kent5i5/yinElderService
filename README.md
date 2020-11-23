@@ -5,7 +5,7 @@
 ## Screenshots
 
 ![LOGIN SCREEn](/doc/elderservice/Screenshot_1604634177_small.png)
-![HOME](/doc/elderservice/Screenshot_1606097783.png)
+![HOME](/doc/elderservice/Screenshot_1606097783_small.png)
 ![SEARCH](/doc/elderservice/Screenshot_1604649499_small.png)
 
 ## About the components
